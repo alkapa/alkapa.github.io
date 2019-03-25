@@ -354,7 +354,7 @@ var IEEEConverterService = /** @class */ (function () {
             var temp = { numero: 0, resultado: 0, resto: 0, equ: "" };
             temp.numero = numero;
             temp.resultado = numero * 2;
-            temp.equ = "2^{" + count + "}";
+            temp.equ = "2^{-" + count + "}";
             if (Math.trunc(temp.resultado) === 0) {
                 numero = temp.resultado;
                 temp.resto = 0;
