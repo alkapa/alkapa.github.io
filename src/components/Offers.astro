@@ -1,0 +1,36 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="ofrezco" style="background: var(--color-paper-2)">
+  <div class="shell py-[clamp(72px,10vh,120px)]">
+    <div class="reveal mb-[clamp(36px,5vh,56px)] flex items-baseline gap-4">
+      <span class="t-eyebrow" style="color: var(--color-gold)">{t.offer.eyebrow}</span>
+    </div>
+
+    <div class="grid gap-x-[clamp(32px,5vw,72px)]" style="grid-template-columns: repeat(auto-fit, minmax(330px, 1fr))">
+      {
+        t.offer.items.map((it, i) => (
+          <div class="reveal draw-rule py-[clamp(22px,3vh,30px)]" style={`border-top: 2px solid var(--rule); --reveal-delay: ${i * 90}ms`}>
+            <div class="font-mono text-[13px] font-bold" style="color: var(--color-gold)">
+              {it.n}
+            </div>
+            <h3 class="t-offer mt-[10px]">{it.title}</h3>
+            <p class="mt-[12px] max-w-[440px] font-sans text-[16px] leading-[1.6]" style="color: var(--color-soft)">
+              {it.body}
+            </p>
+            {it.metric && (
+              <div class="mt-[16px] font-mono text-[12.5px] font-bold" style="color: var(--color-ink)" set:html={it.metric.replace(/·/g, '<span style="color:var(--color-soft)">·</span>')} />
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

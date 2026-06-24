@@ -1,0 +1,23 @@
+---
+// Fila "movimiento" del índice monumental del hero.
+interface Props {
+  title: string;
+  projects: string;
+  metric: string;
+  delay?: number;
+}
+const { title, projects, metric, delay = 0 } = Astro.props;
+---
+
+<div
+  class="reveal draw-rule flex flex-wrap items-baseline justify-between gap-x-6 gap-y-4 py-[clamp(16px,2vw,22px)]"
+  style={`border-top: 2px solid var(--rule); --reveal-delay: ${delay}ms`}
+>
+  <div class="t-row">{title}</div>
+  <div class="flex flex-wrap items-baseline gap-[clamp(14px,2vw,30px)]">
+    <span class="font-mono text-[13px] font-bold" style="color: var(--color-soft)">{projects}</span>
+    <span class="min-w-[96px] text-right font-mono text-[clamp(14px,1.4vw,16px)] font-bold" style="color: var(--color-gold)">
+      {metric}
+    </span>
+  </div>
+</div>

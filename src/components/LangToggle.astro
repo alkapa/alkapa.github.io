@@ -1,0 +1,50 @@
+---
+import { ui, altLangHref, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const isEs = lang === 'es';
+---
+
+<div
+  class="inline-flex overflow-hidden rounded-full border font-mono text-[12px] font-bold"
+  style="border-color: rgba(19,32,31,.22)"
+  role="group"
+  aria-label={t.a11y.langToggle}
+  data-lang-toggle
+>
+  <a
+    href={isEs ? '#' : '/'}
+    hreflang="es"
+    aria-current={isEs ? 'true' : undefined}
+    aria-disabled={isEs ? 'true' : undefined}
+    data-set-lang="es"
+    class="px-[10px] py-[5px]"
+    style={isEs ? 'background: var(--color-ink); color: var(--color-paper); pointer-events: none;' : 'color: var(--color-soft);'}
+    tabindex={isEs ? -1 : undefined}>ES</a>
+  <a
+    href={isEs ? altLangHref(lang) : '#'}
+    hreflang="en"
+    aria-current={!isEs ? 'true' : undefined}
+    aria-disabled={!isEs ? 'true' : undefined}
+    data-set-lang="en"
+    class="px-[10px] py-[5px]"
+    style={!isEs ? 'background: var(--color-ink); color: var(--color-paper); pointer-events: none;' : 'color: var(--color-soft);'}
+    tabindex={!isEs ? -1 : undefined}>EN</a>
+</div>
+
+<script>
+  // Persiste la preferencia de idioma al elegir (mejora progresiva).
+  for (const el of document.querySelectorAll<HTMLAnchorElement>('[data-set-lang]')) {
+    el.addEventListener('click', () => {
+      try {
+        localStorage.setItem('lang', el.dataset.setLang || 'es');
+      } catch {
+        /* localStorage no disponible: no pasa nada */
+      }
+    });
+  }
+</script>

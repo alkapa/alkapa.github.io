@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Tokens — dirección "B Monumental" (Claude Design / SPECS)
+   ============================================================ */
+@theme {
+  --color-paper:       #F3EFE7;
+  --color-paper-2:     #EAE4D6;
+  --color-card:        #FAF7F0;
+  --color-ink:         #13201F;
+  --color-ink-2:       #1B2C2A;
+  --color-soft:        #6E7A72;
+  --color-gold:        #A8761A;
+  --color-gold-bright: #E9B24A;
+  --color-ok:          #2FAE6A;
+
+  --font-display: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "Space Mono", ui-monospace, monospace;
+}
+
+:root {
+  --rule:  rgba(19, 32, 31, .85); /* reglas gruesas 2px */
+  --line:  rgba(19, 32, 31, .13); /* hairlines / bordes de tarjeta */
+  --shell: clamp(20px, 5vw, 64px); /* padding-inline del container */
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--color-gold-bright); color: var(--color-ink); }
+
+/* Foco de teclado visible (oro) */
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+.on-ink :where(a, button):focus-visible { outline-color: var(--color-gold-bright); }
+
+/* Skip link */
+.skip-link {
+  position: fixed; left: 12px; top: -64px;
+  background: var(--color-ink); color: var(--color-paper);
+  padding: 10px 16px; border-radius: 6px;
+  font: 600 14px var(--font-sans); z-index: 100;
+  text-decoration: none;
+  transition: top .18s ease;
+}
+.skip-link:focus { top: 12px; }
+
+/* Container helper */
+.shell { max-width: 1200px; margin-inline: auto; padding-inline: var(--shell); }
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
+@keyframes softpulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@keyframes mk        { from { background-size: 0% 32%; } to { background-size: 100% 32%; } }
+
+/* status dot */
+.anim-pulse { animation: softpulse 2.2s infinite; }
+
+/* Subrayado del hero que "se dibuja" (acento de director) */
+.mkline {
+  background-image: linear-gradient(var(--color-gold-bright), var(--color-gold-bright));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 32%; /* visible por defecto (sin JS) */
+}
+.js-motion .mkline {
+  background-size: 0% 32%;
+  animation: mk .8s cubic-bezier(.5, 0, .2, 1) forwards .4s;
+}
+
+/* ============================================================
+   Reveal — mejora progresiva ("entradas de instrumentos")
+   Sin JS o con reduced-motion: el contenido SIEMPRE es visible.
+   ============================================================ */
+.js-motion .reveal { opacity: 0; transform: translateY(22px); will-change: opacity, transform; }
+.js-motion .reveal.is-visible {
+  opacity: 1; transform: none;
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* "Movimientos" del índice: la regla se dibuja izquierda→derecha */
+.draw-rule { background-size: 100% 2px; }
+.js-motion .draw-rule {
+  background-image: linear-gradient(var(--rule), var(--rule));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 0% 2px;
+  border-top-color: transparent !important;
+}
+.js-motion .draw-rule.is-visible {
+  background-size: 100% 2px;
+  transition: background-size .7s cubic-bezier(.4, 0, .1, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ============================================================
+   Tipografía fluida (roles) + texto enriquecido
+   ============================================================ */
+.t-eyebrow  { font: 700 13px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
+.t-h1       { font: 800 clamp(38px, 5.2vw, 66px)/0.99 var(--font-display); letter-spacing: -.03em; text-wrap: balance; }
+.t-sec      { font: 800 clamp(28px, 3.8vw, 48px)/1.08 var(--font-display); letter-spacing: -.025em; text-wrap: balance; }
+.t-contact  { font: 800 clamp(34px, 4.6vw, 60px)/1.0 var(--font-display); letter-spacing: -.03em; text-wrap: balance; }
+.t-row      { font: 700 clamp(22px, 2.4vw, 32px) var(--font-display); letter-spacing: -.02em; }
+.t-offer    { font: 700 clamp(21px, 2vw, 26px)/1.15 var(--font-display); letter-spacing: -.01em; }
+.t-lead     { font: 400 clamp(17px, 1.6vw, 19px)/1.6 var(--font-sans); }
+
+.rich code { font-family: var(--font-mono); font-size: .9em; }
+.rich b, .rich strong { color: var(--color-ink); font-weight: 600; }
+.on-ink .rich b, .on-ink .rich strong { color: var(--color-paper); }
+
+/* nav: sección activa (G8) */
+[data-navlink] { position: relative; }
+[data-navlink][data-active] { color: var(--color-ink); }
+[data-navlink][data-active]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 2px;
+  background: var(--color-gold);
+}
+
+/* ============================================================
+   Reduced motion — apaga todo, deja el estado final
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .anim-pulse { animation: none; opacity: 1; }
+  .mkline { background-size: 100% 32% !important; animation: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .draw-rule { background-image: none !important; border-top-color: var(--rule) !important; }
+}

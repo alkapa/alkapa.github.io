@@ -1,0 +1,68 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  delay?: number;
+}
+const { project, lang, delay = 0 } = Astro.props;
+const t = ui[lang];
+const Tag = project.link ? 'a' : 'div';
+const linkAttrs = project.link ? { href: project.link, target: '_blank', rel: 'noopener' } : {};
+---
+
+<Tag
+  {...linkAttrs}
+  class="card-pluck reveal flex flex-col rounded-[6px] p-[clamp(22px,2.5vw,28px)] no-underline"
+  style={`background: var(--color-card); border: 1px solid var(--line); color: var(--color-ink); --reveal-delay: ${delay}ms`}
+>
+  <div class="flex items-baseline justify-between gap-[10px]">
+    <span class="flex items-baseline gap-2 font-mono text-[17px] font-bold">
+      {project.name}
+      {project.side && <span class="font-mono text-[10px] font-normal tracking-[.08em]" style="color: var(--color-soft)">{t.projects.side}</span>}
+    </span>
+    <span class="text-right font-mono text-[11px] font-bold" style="color: var(--color-gold)">{project.stack}</span>
+  </div>
+
+  <h4 class="mt-[10px] font-display text-[16px] font-semibold leading-[1.25]">{project.title[lang]}</h4>
+
+  <p class="rich mt-[9px] flex-1 font-sans text-[14.5px] leading-[1.55]" style="color: var(--color-soft)" set:html={project.desc[lang]} />
+
+  {project.metric && <div class="mt-[14px] font-mono text-[12px] font-bold" style="color: var(--color-ink)">{project.metric}</div>}
+
+  <!-- "cuerda" oro que se dibuja al hover (G7) -->
+  <span class="pluck-string" aria-hidden="true"></span>
+</Tag>
+
+<style>
+  .card-pluck {
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s cubic-bezier(.2, .7, .2, 1), border-color .25s ease;
+  }
+  .pluck-string {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: var(--color-gold);
+    transition: transform .4s cubic-bezier(.4, 0, .1, 1);
+  }
+  .js-motion .card-pluck:hover {
+    transform: translateY(-4px);
+    border-color: rgba(19, 32, 31, 0.28);
+  }
+  .js-motion .card-pluck:hover .pluck-string,
+  .js-motion .card-pluck:focus-visible .pluck-string {
+    transform: scaleX(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-pluck { transition: none; }
+    .pluck-string { display: none; }
+  }
+</style>

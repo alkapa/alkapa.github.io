@@ -1,0 +1,25 @@
+---
+import { type Lang } from '../i18n/ui';
+import Nav from './Nav.astro';
+import Hero from './Hero.astro';
+import Offers from './Offers.astro';
+import Projects from './Projects.astro';
+import Thesis from './Thesis.astro';
+import Track from './Track.astro';
+import Contact from './Contact.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<Nav lang={lang} />
+<main id="main">
+  <Hero lang={lang} />
+  <Offers lang={lang} />
+  <Projects lang={lang} />
+  <Thesis lang={lang} />
+  <Track lang={lang} />
+  <Contact lang={lang} />
+</main>

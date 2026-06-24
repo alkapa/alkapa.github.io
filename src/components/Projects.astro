@@ -1,0 +1,64 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import { projects, featured } from '../data/projects';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="proyectos" style="background: var(--color-paper)">
+  <div class="shell py-[clamp(72px,10vh,120px)]">
+    <div class="reveal mb-[clamp(32px,5vh,48px)] flex flex-wrap items-baseline justify-between gap-3">
+      <span class="t-eyebrow" style="color: var(--color-gold)">{t.projects.eyebrow}</span>
+      <span class="font-mono text-[13px]" style="color: var(--color-soft)">{t.projects.count}</span>
+    </div>
+
+    <!-- Destacado: ualess (oscuro) -->
+    <a
+      href={featured.link}
+      target="_blank"
+      rel="noopener"
+      class="on-ink card-feature reveal mb-[clamp(16px,2vw,22px)] block rounded-[6px] p-[clamp(26px,4vw,40px)] no-underline"
+      style="background: var(--color-ink); color: var(--color-paper)"
+    >
+      <div class="flex flex-wrap items-baseline justify-between gap-3">
+        <div class="flex items-center gap-[10px] font-mono text-[clamp(20px,2.4vw,28px)] font-bold" style="color: var(--color-paper)">
+          {featured.name}
+          {featured.star && <span class="text-[18px]" style="color: var(--color-gold-bright)">★</span>}
+        </div>
+        <div class="font-mono text-[12px] font-bold tracking-[.06em]" style="color: var(--color-gold-bright)">{featured.stack}</div>
+      </div>
+      <h3 class="mt-[14px] max-w-[760px] font-display text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2]" style="color: var(--color-paper)">
+        {featured.title[lang]}
+      </h3>
+      <p class="rich mt-[14px] max-w-[760px] font-sans text-[clamp(15px,1.5vw,16.5px)] leading-[1.65]" style="color: rgba(243,239,231,.72)" set:html={featured.desc[lang]} />
+      <span
+        class="mt-[18px] inline-flex items-center gap-2 font-mono text-[13px] font-bold"
+        style="color: var(--color-paper); border-bottom: 1px solid rgba(243,239,231,.4); padding-bottom: 2px"
+      >
+        github.com/alkapa/ualess →
+      </span>
+    </a>
+
+    <!-- Grilla -->
+    <div class="grid gap-[clamp(16px,2vw,22px)]" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))">
+      {projects.map((p, i) => <ProjectCard project={p} lang={lang} delay={i * 70} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .card-feature {
+    transition: transform .25s cubic-bezier(.2, .7, .2, 1);
+  }
+  .js-motion .card-feature:hover {
+    transform: translateY(-3px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-feature { transition: none; }
+  }
+</style>

@@ -1,0 +1,38 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import { experience, experienceFootnote } from '../data/experience';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section style="background: var(--color-paper)">
+  <div class="shell py-[clamp(72px,10vh,120px)]">
+    <span class="reveal t-eyebrow" style="color: var(--color-gold)">{t.track.eyebrow}</span>
+
+    <div class="mt-[clamp(32px,5vh,48px)]" style="border-bottom: 2px solid var(--rule)">
+      {
+        experience.map((job, i) => {
+          const meta = job.role ? `${job.period} · ${job.role[lang]}` : job.period;
+          return (
+            <div
+              class="reveal draw-rule flex flex-wrap items-baseline gap-x-[28px] gap-y-2 py-[clamp(18px,2.4vh,26px)]"
+              style={`border-top: 2px solid var(--rule); --reveal-delay: ${i * 90}ms`}
+            >
+              <div class="t-row min-w-[200px]">{job.company}</div>
+              <div class="font-mono text-[12px] font-bold" style="color: var(--color-gold)">{meta}</div>
+              <div class="min-w-[240px] flex-1 font-sans text-[15.5px] leading-[1.5]" style="color: var(--color-soft)">
+                {job.summary[lang]}
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <p class="reveal mt-[22px] font-mono text-[13px]" style="color: var(--color-soft)">{experienceFootnote[lang]}</p>
+  </div>
+</section>

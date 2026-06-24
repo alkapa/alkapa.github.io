@@ -1,0 +1,58 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import LangToggle from './LangToggle.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const links = [
+  { href: '#ofrezco', label: t.nav.offer },
+  { href: '#proyectos', label: t.nav.projects },
+  { href: '#contacto', label: t.nav.contact },
+];
+---
+
+<header
+  class="sticky top-0 z-50"
+  style="background: rgba(243,239,231,.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line)"
+>
+  <nav class="shell flex items-center justify-between gap-4 py-4" aria-label="Principal">
+    <a
+      href="#top"
+      class="flex items-center gap-[11px] font-mono text-[18px] font-bold no-underline"
+      style="color: var(--color-ink)"
+    >
+      <span
+        class="inline-block h-[11px] w-[11px] rotate-45 rounded-[2px]"
+        style="background: var(--color-gold)"
+        aria-hidden="true"></span>alkapa
+    </a>
+
+    <div class="flex items-center gap-3 sm:gap-[clamp(12px,2vw,26px)] text-[14px] font-medium" style="color: var(--color-soft)">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            data-navlink={l.href}
+            class="hidden whitespace-nowrap no-underline transition-colors hover:text-[var(--color-ink)] sm:inline"
+            style="color: inherit"
+          >
+            {l.label}
+          </a>
+        ))
+      }
+      <span
+        class="inline-flex items-center gap-[7px] whitespace-nowrap font-mono text-[12px] font-semibold"
+        style="color: var(--color-ink)"
+      >
+        <span
+          class="anim-pulse inline-block h-[7px] w-[7px] rounded-full"
+          style="background: var(--color-ok); box-shadow: 0 0 0 3px rgba(47,174,106,.16)"
+          aria-hidden="true"></span>{t.nav.status}
+      </span>
+      <LangToggle lang={lang} />
+    </div>
+  </nav>
+</header>

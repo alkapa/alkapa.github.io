@@ -1,0 +1,74 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import { site } from '../data/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const mailto = `mailto:${site.email}`;
+---
+
+<section id="contacto" class="on-ink relative overflow-hidden" style="background: var(--color-ink); color: var(--color-paper)">
+  <!-- ↗ ghost (G5: parallax) -->
+  <div
+    class="pointer-events-none absolute right-[-50px] bottom-[-160px] select-none font-display font-extrabold"
+    style="font-size: clamp(260px,34vw,420px); line-height: .7; color: rgba(243,239,231,.035)"
+    data-parallax="0.05"
+    aria-hidden="true"
+  >
+    ↗
+  </div>
+
+  <div class="relative mx-auto max-w-[1100px] px-[var(--shell)] py-[clamp(80px,12vh,140px)]">
+    <h2 class="reveal t-contact max-w-[820px]" style="color: var(--color-paper)">{t.contact.h2}</h2>
+    <p class="reveal mt-[22px] max-w-[600px] font-sans text-[clamp(16px,1.7vw,19px)] leading-[1.6]" style="--reveal-delay: 80ms; color: rgba(243,239,231,.74)">
+      {t.contact.body}
+    </p>
+
+    <div class="reveal mt-[32px] flex flex-wrap gap-[13px]" style="--reveal-delay: 120ms">
+      <a
+        href={mailto}
+        class="inline-flex items-center gap-[9px] rounded-[6px] px-[28px] py-[16px] font-sans text-[15px] font-bold no-underline transition-transform hover:-translate-y-px"
+        style="background: var(--color-gold-bright); color: #1c1403"
+      >
+        {t.contact.ctaPrimary} <span class="text-[13px] font-normal">{t.contact.ctaPrimaryNote}</span> →
+      </a>
+      <a
+        href={mailto}
+        class="inline-flex items-center gap-[9px] rounded-[6px] px-[28px] py-[16px] font-sans text-[15px] font-semibold no-underline transition-colors hover:bg-[rgba(243,239,231,.08)]"
+        style="border: 1.5px solid rgba(243,239,231,.3); color: var(--color-paper)"
+      >
+        {t.contact.ctaSecondary} <span class="text-[13px] opacity-70">{t.contact.ctaSecondaryNote}</span>
+      </a>
+    </div>
+
+    <div
+      class="mt-[clamp(40px,6vh,56px)] flex flex-wrap gap-x-[40px] gap-y-[14px] pt-[clamp(24px,3vh,32px)] font-mono text-[14px] font-medium"
+      style="border-top: 1px solid rgba(243,239,231,.18)"
+    >
+      <a href={mailto} class="no-underline" style="color: var(--color-paper)">
+        <span class="mb-[3px] block text-[11px]" style="color: var(--color-soft)">{t.contact.labelEmail}</span>{site.email}
+      </a>
+      <a href={site.linkedin.url} target="_blank" rel="noopener" class="no-underline" style="color: var(--color-paper)">
+        <span class="mb-[3px] block text-[11px]" style="color: var(--color-soft)">{t.contact.labelLinkedin}</span>{site.linkedin.label}
+      </a>
+      <a href={site.github.url} target="_blank" rel="noopener" class="no-underline" style="color: var(--color-paper)">
+        <span class="mb-[3px] block text-[11px]" style="color: var(--color-soft)">{t.contact.labelGithub}</span>{site.github.label}
+      </a>
+      <a href={site.cv} class="no-underline" style="color: var(--color-gold-bright)">
+        <span class="mb-[3px] block text-[11px]" style="color: var(--color-soft)">{t.contact.labelCv}</span>{t.contact.cvText}
+      </a>
+    </div>
+  </div>
+
+  <div class="relative" style="border-top: 1px solid rgba(243,239,231,.12)">
+    <div class="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-[10px] px-[var(--shell)] py-[22px] font-mono text-[12px] font-medium" style="color: var(--color-soft)">
+      <span class="flex items-center gap-[9px]">
+        <span class="inline-block h-[9px] w-[9px] rotate-45 rounded-[2px]" style="background: var(--color-gold-bright)" aria-hidden="true"></span>alkapa · {site.fullName}
+      </span>
+      <span>{t.contact.footerMade}</span>
+    </div>
+  </div>
+</section>

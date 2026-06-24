@@ -1,0 +1,180 @@
+---
+// G2 — Diagrama de orquestación: nodos-instrumento que pulsan en UNÍSONO sobre un
+// compás compartido = "coordinación verificable y determinística, en tiempo".
+// Un director (metrónomo) marca el tempo; en cada downbeat todos enganchan a la vez.
+// Con prefers-reduced-motion: estado estático (en el downbeat), sin animación.
+interface Props {
+  caption: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="orch" role="img" aria-label={caption}>
+  <canvas data-orch></canvas>
+  <figcaption class="mt-3 font-mono text-[11px] tracking-[.14em]" style="color: var(--color-gold-bright)">{caption}</figcaption>
+</figure>
+
+<style>
+  .orch {
+    margin: 0;
+    width: 100%;
+    max-width: 720px;
+  }
+  .orch canvas {
+    display: block;
+    width: 100%;
+    height: 150px;
+  }
+</style>
+
+<script>
+  const fig = document.querySelector<HTMLElement>('.orch');
+  const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-orch]');
+  const ctx = canvas?.getContext('2d');
+
+  if (fig && canvas && ctx) {
+    const motion = document.documentElement.classList.contains('js-motion');
+    const paper = '243, 239, 231';
+    const gold = '233, 178, 74';
+    const N = 7;
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let t = 0;
+    let lastBeatSign = 1;
+    let running = false;
+    const tempo = 1.15; // rad/s del balanceo del director
+    const swing = 0.34; // amplitud relativa del balanceo
+    const nodes = Array.from({ length: N }, () => ({ energy: 0 }));
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = fig!.clientWidth;
+      h = canvas!.clientHeight;
+      canvas!.width = Math.round(w * dpr);
+      canvas!.height = Math.round(h * dpr);
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function nodeX(i: number) {
+      const pad = w * 0.08;
+      return pad + (i / (N - 1)) * (w - pad * 2);
+    }
+
+    function draw(conductorPhase: number) {
+      ctx!.clearRect(0, 0, w, h);
+      const baseY = h * 0.72;
+      const topY = h * 0.16;
+      const cx = w / 2 + Math.sin(conductorPhase) * (w * swing) * 0.5;
+
+      // baseline (la "partitura")
+      ctx!.strokeStyle = `rgba(${paper}, 0.16)`;
+      ctx!.lineWidth = 1;
+      ctx!.beginPath();
+      ctx!.moveTo(w * 0.04, baseY);
+      ctx!.lineTo(w * 0.96, baseY);
+      ctx!.stroke();
+
+      // líneas de orquestación (director → cada nodo)
+      for (let i = 0; i < N; i++) {
+        const x = nodeX(i);
+        const e = nodes[i].energy;
+        ctx!.strokeStyle = `rgba(${gold}, ${0.06 + e * 0.5})`;
+        ctx!.lineWidth = 1;
+        ctx!.beginPath();
+        ctx!.moveTo(cx, topY);
+        ctx!.lineTo(x, baseY);
+        ctx!.stroke();
+      }
+
+      // nodos-instrumento
+      for (let i = 0; i < N; i++) {
+        const x = nodeX(i);
+        const e = nodes[i].energy;
+        const r = 4 + e * 6;
+        if (e > 0.01) {
+          const glow = ctx!.createRadialGradient(x, baseY, 0, x, baseY, 22);
+          glow.addColorStop(0, `rgba(${gold}, ${e * 0.6})`);
+          glow.addColorStop(1, `rgba(${gold}, 0)`);
+          ctx!.fillStyle = glow;
+          ctx!.beginPath();
+          ctx!.arc(x, baseY, 22, 0, Math.PI * 2);
+          ctx!.fill();
+        }
+        ctx!.fillStyle = e > 0.2 ? `rgba(${gold}, ${0.7 + e * 0.3})` : `rgba(${paper}, 0.5)`;
+        ctx!.beginPath();
+        ctx!.arc(x, baseY, r, 0, Math.PI * 2);
+        ctx!.fill();
+      }
+
+      // director (metrónomo): brazo + punta
+      ctx!.strokeStyle = `rgba(${paper}, 0.35)`;
+      ctx!.lineWidth = 1.5;
+      ctx!.beginPath();
+      ctx!.moveTo(w / 2, topY - 10);
+      ctx!.lineTo(cx, topY + 14);
+      ctx!.stroke();
+      ctx!.fillStyle = `rgba(${gold}, 0.95)`;
+      ctx!.beginPath();
+      ctx!.arc(cx, topY + 14, 3.4, 0, Math.PI * 2);
+      ctx!.fill();
+    }
+
+    function pulseAll() {
+      for (const n of nodes) n.energy = 1;
+    }
+
+    let raf = 0;
+    function frame(ms: number) {
+      t = (ms || 0) / 1000;
+      const phase = t * tempo;
+      const sign = Math.cos(phase) >= 0 ? 1 : -1; // downbeat en cada extremo
+      if (sign !== lastBeatSign) {
+        lastBeatSign = sign;
+        pulseAll(); // todos enganchan al compás, EXACTO, a la vez
+      }
+      for (const n of nodes) {
+        n.energy *= 0.9;
+        if (n.energy < 0.001) n.energy = 0;
+      }
+      draw(phase);
+      raf = requestAnimationFrame(frame);
+    }
+
+    function startIfVisible() {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting && !running) {
+              running = true;
+              raf = requestAnimationFrame(frame);
+            } else if (!e.isIntersecting && running) {
+              running = false;
+              cancelAnimationFrame(raf);
+            }
+          }
+        },
+        { threshold: 0.15 },
+      );
+      io.observe(fig!);
+    }
+
+    const ro = new ResizeObserver(() => {
+      resize();
+      if (!motion) {
+        for (const n of nodes) n.energy = 1;
+        draw(0);
+      }
+    });
+    ro.observe(fig);
+    resize();
+
+    if (motion) {
+      startIfVisible();
+    } else {
+      for (const n of nodes) n.energy = 1; // estado en el downbeat
+      draw(0);
+    }
+  }
+</script>

@@ -1,0 +1,51 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import Orchestration from './Orchestration.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section class="on-ink relative overflow-hidden" style="background: var(--color-ink); color: var(--color-paper)">
+  <!-- ∿ ghost (G5: parallax) -->
+  <div
+    class="pointer-events-none absolute left-[-40px] top-[-90px] select-none font-display font-extrabold"
+    style="font-size: clamp(220px,30vw,380px); line-height: .7; color: rgba(243,239,231,.035)"
+    data-parallax="0.04"
+    aria-hidden="true"
+  >
+    ∿
+  </div>
+
+  <div class="relative mx-auto max-w-[1100px] px-[var(--shell)] py-[clamp(80px,12vh,140px)]">
+    <span class="reveal t-eyebrow" style="color: var(--color-gold-bright)">{t.thesis.eyebrow}</span>
+
+    <h2 class="reveal t-sec mt-[24px] max-w-[920px]" style="--reveal-delay: 80ms; color: var(--color-paper)">
+      {t.thesis.h2.pre}<span style="color: var(--color-gold-bright)">{t.thesis.h2.gold}</span>{t.thesis.h2.post}
+    </h2>
+
+    <p class="reveal mt-[26px] max-w-[680px] font-sans text-[clamp(16px,1.7vw,19px)] leading-[1.65]" style="--reveal-delay: 140ms; color: rgba(243,239,231,.74)">
+      {t.thesis.body}
+    </p>
+
+    <!-- G2 — orquestación -->
+    <div class="reveal mt-[clamp(32px,5vh,52px)]" style="--reveal-delay: 160ms">
+      <Orchestration caption={t.thesis.beat} />
+    </div>
+
+    <!-- Mado / Gitar -->
+    <div class="mt-[34px] flex flex-wrap gap-[14px]">
+      {
+        t.thesis.cards.map((c, i) => (
+          <div class="reveal max-w-[340px] rounded-[6px] p-[16px_20px]" style={`border: 1px solid rgba(243,239,231,.2); --reveal-delay: ${i * 90}ms`}>
+            <div class="font-mono text-[14px] font-bold" style="color: var(--color-gold-bright)">{c.name}</div>
+            <div class="mt-[5px] font-sans text-[14px] leading-[1.5]" style="color: rgba(243,239,231,.7)">{c.body}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

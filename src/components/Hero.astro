@@ -1,0 +1,63 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import IndexRow from './IndexRow.astro';
+import ScoreLine from './ScoreLine.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="top" class="relative overflow-hidden">
+  <!-- λ ghost (G5: parallax sutil) -->
+  <div
+    class="pointer-events-none absolute right-[-50px] bottom-[-150px] z-0 select-none font-display font-extrabold"
+    style="font-size: clamp(280px,38vw,460px); line-height: .7; color: rgba(19,32,31,.04)"
+    data-parallax="0.05"
+    aria-hidden="true"
+  >
+    λ
+  </div>
+
+  <div class="shell relative z-10 pt-[clamp(48px,8vh,90px)] pb-[clamp(40px,6vh,64px)]">
+    <div class="reveal font-mono text-[13px] font-bold" style="--reveal-delay: 0ms; letter-spacing: .05em; color: var(--color-soft)">
+      {t.hero.eyebrow}
+    </div>
+    <h1 class="reveal t-h1 mt-[18px] max-w-[1000px]" style="--reveal-delay: 90ms; color: var(--color-ink)">
+      {t.hero.h1.pre}<span class="mkline">{t.hero.h1.mark}</span>{t.hero.h1.post}
+    </h1>
+    <p class="reveal t-lead mt-[26px] max-w-[620px]" style="--reveal-delay: 180ms; color: var(--color-soft)">
+      {t.hero.lead.pre}<span style="color: var(--color-ink); font-weight: 600">{t.hero.lead.strong}</span>{t.hero.lead.post}
+    </p>
+  </div>
+
+  <!-- G1 — línea-batuta -->
+  <div class="shell relative z-10">
+    <ScoreLine />
+  </div>
+
+  <!-- Índice monumental — "movimientos" -->
+  <div class="shell relative z-10" style="border-bottom: 2px solid var(--rule)">
+    {t.hero.index.map((row, i) => <IndexRow title={row.title} projects={row.projects} metric={row.metric} delay={i * 120} />)}
+  </div>
+
+  <!-- CTAs -->
+  <div class="shell reveal relative z-10 flex flex-wrap gap-[13px] pt-[clamp(28px,4vh,40px)] pb-[clamp(56px,8vh,80px)]" style="--reveal-delay: 120ms">
+    <a
+      href="#contacto"
+      class="inline-flex items-center gap-[9px] rounded-[6px] px-[26px] py-[15px] font-sans text-[15px] font-bold no-underline transition-transform hover:-translate-y-px"
+      style="background: var(--color-ink); color: var(--color-paper)"
+    >
+      {t.hero.ctaPrimary} →
+    </a>
+    <a
+      href="#contacto"
+      class="inline-flex items-center gap-[9px] rounded-[6px] px-[26px] py-[15px] font-sans text-[15px] font-semibold no-underline transition-colors hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
+      style="border: 1.5px solid var(--color-ink); color: var(--color-ink)"
+    >
+      {t.hero.ctaSecondary}
+    </a>
+  </div>
+</section>
