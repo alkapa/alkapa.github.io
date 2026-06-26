@@ -83,6 +83,7 @@ export const projects: Project[] = [
     slug: 'gauchada',
     name: 'gauchada',
     stack: 'Node · React',
+    link: 'https://github.com/alkapa/gauchada',
     cats: ['ai', 'tooling'],
     title: {
       es: 'Agente Claude embebido en Chrome',
