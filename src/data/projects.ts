@@ -97,6 +97,7 @@ export const projects: Project[] = [
     slug: 'triqui',
     name: 'triqui',
     stack: 'Go',
+    link: 'https://github.com/alkapa/triqui',
     cats: ['ai', 'backend'],
     title: {
       es: 'Proxy OpenAI ↔ ACP',
