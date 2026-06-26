@@ -25,7 +25,6 @@ export const projects: Project[] = [
     slug: 'ualess',
     name: 'ualess',
     stack: 'Go · AWS Lambda · MCP',
-    link: 'https://github.com/alkapa/ualess',
     cats: ['tooling', 'ai', 'scalability', 'testing'],
     title: {
       es: 'Scaffolding universal de servicios Lambda en Go',
@@ -40,7 +39,6 @@ export const projects: Project[] = [
     slug: 'lambda-go',
     name: 'lambda-go',
     stack: 'Go · AWS',
-    link: 'https://github.com/alkapa/ualess',
     metric: '+45% dev · −60% code review',
     cats: ['backend', 'scalability', 'tooling', 'testing'],
     title: {
