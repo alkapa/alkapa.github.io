@@ -11,5 +11,5 @@ export const site = {
     url: 'https://github.com/alkapa',
     label: 'github.com/alkapa',
   },
-  cv: '/cv.pdf',
+  cv: { es: '/cv-es.pdf', en: '/cv-en.pdf' },
 } as const;

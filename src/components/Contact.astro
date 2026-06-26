@@ -57,7 +57,7 @@ const mailto = `mailto:${site.email}`;
       <a href={site.github.url} target="_blank" rel="noopener" class="no-underline" style="color: var(--color-paper)">
         <span class="mb-[3px] block text-[11px]" style="color: var(--color-soft)">{t.contact.labelGithub}</span>{site.github.label}
       </a>
-      <a href={site.cv} class="no-underline" style="color: var(--color-gold-bright)">
+      <a href={site.cv[lang]} download={`CV_Juan_Camilo_Gutierrez_${lang.toUpperCase()}.pdf`} class="no-underline" style="color: var(--color-gold-bright)">
         <span class="mb-[3px] block text-[11px]" style="color: var(--color-soft)">{t.contact.labelCv}</span>{t.contact.cvText}
       </a>
     </div>

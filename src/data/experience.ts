@@ -9,12 +9,21 @@ export interface Job {
 
 export const experience: Job[] = [
   {
+    company: 'MODO',
+    period: '2026',
+    role: { es: 'Senior Software Engineer', en: 'Senior Software Engineer' },
+    summary: {
+      es: 'Tooling con IA para ingeniería: validación y gobernanza de agentes en CI, estándar de repos AI-first y tablero DORA por squad.',
+      en: 'AI tooling for engineering: agent validation & governance in CI, an AI-first repo standard, and a DORA dashboard per squad.',
+    },
+  },
+  {
     company: 'Ualá',
     period: '2022–2026',
     role: { es: 'Senior → Lead', en: 'Senior → Lead' },
     summary: {
-      es: 'Plataforma de ~20M txns/mes; creé lambda-go, ualess y la mayoría de las librerías del ecosistema (goala).',
-      en: '~20M txns/month platform; I built lambda-go, ualess and most of the ecosystem libraries (goala).',
+      es: 'Lead de Backend Platform en una plataforma de ~20M txns/mes; creé lambda-go, ualess y la mayoría de las librerías del ecosistema (goala).',
+      en: 'Backend Platform Lead on a ~20M txns/month platform; I built lambda-go, ualess and most of the ecosystem libraries (goala).',
     },
   },
   {
