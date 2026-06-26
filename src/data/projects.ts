@@ -68,6 +68,7 @@ export const projects: Project[] = [
     slug: 'gitar',
     name: 'gitar',
     stack: 'Rust · Tauri',
+    link: 'https://github.com/alkapa/gitar',
     cats: ['ai', 'tooling', 'testing'],
     title: {
       es: 'Revisión de código generado por IA',
