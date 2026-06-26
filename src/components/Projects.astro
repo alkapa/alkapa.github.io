@@ -1,6 +1,6 @@
 ---
 import { ui, type Lang } from '../i18n/ui';
-import { projects, featured } from '../data/projects';
+import { projects, catOrder } from '../data/projects';
 import ProjectCard from './ProjectCard.astro';
 
 interface Props {
@@ -8,57 +8,108 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+
+// Sólo las categorías que efectivamente tienen proyectos.
+const usedCats = catOrder.filter((c) => projects.some((p) => p.cats.includes(c)));
 ---
 
 <section id="proyectos" style="background: var(--color-paper)">
   <div class="shell py-[clamp(72px,10vh,120px)]">
-    <div class="reveal mb-[clamp(32px,5vh,48px)] flex flex-wrap items-baseline justify-between gap-3">
+    <div class="reveal mb-[clamp(20px,3vh,28px)] flex flex-wrap items-baseline justify-between gap-3">
       <span class="t-eyebrow" style="color: var(--color-gold)">{t.projects.eyebrow}</span>
-      <span class="font-mono text-[13px]" style="color: var(--color-soft)">{t.projects.count}</span>
-    </div>
-
-    <!-- Destacado: ualess (oscuro) -->
-    <a
-      href={featured.link}
-      target="_blank"
-      rel="noopener"
-      class="on-ink card-feature reveal mb-[clamp(16px,2vw,22px)] block rounded-[6px] p-[clamp(26px,4vw,40px)] no-underline"
-      style="background: var(--color-ink); color: var(--color-paper)"
-    >
-      <div class="flex flex-wrap items-baseline justify-between gap-3">
-        <div class="flex items-center gap-[10px] font-mono text-[clamp(20px,2.4vw,28px)] font-bold" style="color: var(--color-paper)">
-          {featured.name}
-          {featured.star && <span class="text-[18px]" style="color: var(--color-gold-bright)">★</span>}
-        </div>
-        <div class="font-mono text-[12px] font-bold tracking-[.06em]" style="color: var(--color-gold-bright)">{featured.stack}</div>
-      </div>
-      <h3 class="mt-[14px] max-w-[760px] font-display text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2]" style="color: var(--color-paper)">
-        {featured.title[lang]}
-      </h3>
-      <p class="rich mt-[14px] max-w-[760px] font-sans text-[clamp(15px,1.5vw,16.5px)] leading-[1.65]" style="color: rgba(243,239,231,.72)" set:html={featured.desc[lang]} />
-      <span
-        class="mt-[18px] inline-flex items-center gap-2 font-mono text-[13px] font-bold"
-        style="color: var(--color-paper); border-bottom: 1px solid rgba(243,239,231,.4); padding-bottom: 2px"
-      >
-        github.com/alkapa/ualess →
+      <span class="font-mono text-[13px]" style="color: var(--color-soft)">
+        <span id="proj-count">{projects.length}</span> · {t.projects.count}
       </span>
-    </a>
-
-    <!-- Grilla -->
-    <div class="grid gap-[clamp(16px,2vw,22px)]" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))">
-      {projects.map((p, i) => <ProjectCard project={p} lang={lang} delay={i * 70} />)}
     </div>
+
+    <!-- Filtros por categoría -->
+    <div
+      id="proj-filters"
+      class="reveal mb-[clamp(26px,4vh,40px)] flex flex-wrap gap-[9px]"
+      role="group"
+      aria-label={t.projects.filterLabel}
+      style="--reveal-delay: 60ms"
+    >
+      <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">{t.projects.all}</button>
+      {
+        usedCats.map((c) => (
+          <button type="button" class="filter-chip" data-filter={c} aria-pressed="false">
+            {t.projects.cats[c]}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Grilla: todos al mismo nivel -->
+    <div id="proj-grid" class="grid gap-[clamp(16px,2vw,22px)]" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))">
+      {projects.map((p, i) => <ProjectCard project={p} lang={lang} delay={i * 60} />)}
+    </div>
+
+    <!-- Estado vacío (no debería darse, pero por las dudas) -->
+    <p id="proj-empty" class="mt-6 hidden font-mono text-[13px]" style="color: var(--color-soft)"></p>
   </div>
 </section>
 
 <style>
-  .card-feature {
-    transition: transform .25s cubic-bezier(.2, .7, .2, 1);
+  .filter-chip {
+    font: 700 12px/1 var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--color-soft);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
   }
-  .js-motion .card-feature:hover {
-    transform: translateY(-3px);
+  .filter-chip:hover {
+    border-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+  .filter-chip.is-active {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+  .is-filtered-out {
+    display: none !important;
   }
   @media (prefers-reduced-motion: reduce) {
-    .card-feature { transition: none; }
+    .filter-chip {
+      transition: none;
+    }
   }
 </style>
+
+<script>
+  const sec = document.getElementById('proyectos');
+  if (sec) {
+    const chips = Array.from(sec.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const cards = Array.from(sec.querySelectorAll<HTMLElement>('#proj-grid > [data-cats]'));
+    const countEl = sec.querySelector<HTMLElement>('#proj-count');
+
+    const apply = (filter: string) => {
+      let shown = 0;
+      for (const card of cards) {
+        const cats = (card.getAttribute('data-cats') || '').split(' ');
+        const show = filter === 'all' || cats.includes(filter);
+        card.classList.toggle('is-filtered-out', !show);
+        if (show) {
+          card.classList.add('is-visible'); // garantiza visibilidad si aún no reveló
+          shown++;
+        }
+      }
+      for (const ch of chips) {
+        const on = ch.getAttribute('data-filter') === filter;
+        ch.classList.toggle('is-active', on);
+        ch.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+      if (countEl) countEl.textContent = String(shown);
+    };
+
+    for (const ch of chips) {
+      ch.addEventListener('click', () => apply(ch.getAttribute('data-filter') || 'all'));
+    }
+  }
+</script>

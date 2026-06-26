@@ -27,7 +27,7 @@ export interface Dict {
     index: IndexRow[];
   };
   offer: { eyebrow: string; items: OfferItem[] };
-  projects: { eyebrow: string; count: string; side: string };
+  projects: { eyebrow: string; count: string; side: string; all: string; filterLabel: string; cats: Record<string, string> };
   thesis: {
     eyebrow: string;
     h2: { pre: string; gold: string; post: string };
@@ -105,7 +105,14 @@ export const ui: Record<Lang, Dict> = {
         },
       ],
     },
-    projects: { eyebrow: '02 — NO TE LO CUENTO, TE LO MUESTRO', count: '8 cosas en producción · 5 públicas', side: 'SIDE' },
+    projects: {
+      eyebrow: '02 — NO TE LO CUENTO, TE LO MUESTRO',
+      count: '8 proyectos · 5 públicos',
+      side: 'SIDE',
+      all: 'Todos',
+      filterLabel: 'Filtrar por categoría',
+      cats: { ai: 'IA', tooling: 'Tooling', backend: 'Backend', scalability: 'Escalabilidad', testing: 'Testing', audio: 'Audio + Hardware' },
+    },
     thesis: {
       eyebrow: '03 — HACIA DÓNDE VOY',
       h2: {
@@ -189,7 +196,14 @@ export const ui: Record<Lang, Dict> = {
         },
       ],
     },
-    projects: { eyebrow: "02 — I WON'T TELL YOU, I'LL SHOW YOU", count: '8 things in production · 5 public', side: 'SIDE' },
+    projects: {
+      eyebrow: "02 — I WON'T TELL YOU, I'LL SHOW YOU",
+      count: '8 projects · 5 public',
+      side: 'SIDE',
+      all: 'All',
+      filterLabel: 'Filter by category',
+      cats: { ai: 'AI', tooling: 'Tooling', backend: 'Backend', scalability: 'Scalability', testing: 'Testing', audio: 'Audio + Hardware' },
+    },
     thesis: {
       eyebrow: "03 — WHERE I'M HEADED",
       h2: {
