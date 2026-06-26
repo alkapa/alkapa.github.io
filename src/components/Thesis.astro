@@ -1,6 +1,5 @@
 ---
 import { ui, type Lang } from '../i18n/ui';
-import Orchestration from './Orchestration.astro';
 
 interface Props {
   lang: Lang;
@@ -30,11 +29,6 @@ const t = ui[lang];
     <p class="reveal mt-[26px] max-w-[680px] font-sans text-[clamp(16px,1.7vw,19px)] leading-[1.65]" style="--reveal-delay: 140ms; color: rgba(243,239,231,.74)">
       {t.thesis.body}
     </p>
-
-    <!-- G2 — orquestación -->
-    <div class="reveal mt-[clamp(32px,5vh,52px)]" style="--reveal-delay: 160ms">
-      <Orchestration caption={t.thesis.beat} />
-    </div>
 
     <!-- Mado / Gitar -->
     <div class="mt-[34px] flex flex-wrap gap-[14px]">

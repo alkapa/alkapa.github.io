@@ -1,7 +1,6 @@
 ---
 import { ui, type Lang } from '../i18n/ui';
 import IndexRow from './IndexRow.astro';
-import ScoreLine from './ScoreLine.astro';
 
 interface Props {
   lang: Lang;
@@ -31,11 +30,6 @@ const t = ui[lang];
     <p class="reveal t-lead mt-[26px] max-w-[620px]" style="--reveal-delay: 180ms; color: var(--color-soft)">
       {t.hero.lead.pre}<span style="color: var(--color-ink); font-weight: 600">{t.hero.lead.strong}</span>{t.hero.lead.post}
     </p>
-  </div>
-
-  <!-- G1 — línea-batuta -->
-  <div class="shell relative z-10">
-    <ScoreLine />
   </div>
 
   <!-- Índice monumental — "movimientos" -->
